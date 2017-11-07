@@ -11,22 +11,22 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="Preprocess micromag files.")
     parser.add_argument("--output_file", metavar="filename",
-                        type=argparse.FileType('w'), nargs=1,
+                        type=str, nargs=1,
                         default=None, help="output filename")
     parser.add_argument("--scale", metavar="factor", type=str, nargs="?",
                         help="remanence scaling factor")
-    parser.add_argument("input_file", metavar="factor",
-                        type=argparse.FileType('w'), nargs=1,
-                        help="remanence scaling factor")
+    parser.add_argument("input_file", metavar="filename",
+                        type=str, nargs=1,
+                        help="input filename")
 
     args = parser.parse_args()
     
-    infile = args.input_file
-    outfile = args.output_file
+    infile = args.input_file[0]
+    outfile = args.output_file[0]
     header = "     (T)          (Am"
     pairs = []
     maxmag = 0
-    with open(infile, encoding = "iso-8859-1") as fh:
+    with open(infile, "rt", encoding="iso-8859-1") as fh:
         reading = False
         for line in fh.readlines():
             if reading:
