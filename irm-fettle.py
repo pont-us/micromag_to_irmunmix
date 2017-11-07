@@ -1,9 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-'''Take a micromag file and render it into a form suitable for
-processing by irmunmix.
-'''
+"""Take a micromag file and render it into a form suitable for
+processing by irmunmix. This consists of: finding the field and
+magnetization values and extracting them from the file; ensuring that
+the magnetization is monotonically increasing; and scaling the field and
+magnetization values to units compatible with irmunmix. Currently
+assumes modified SI unit system in the file.
+"""
 
 import sys
 import argparse
@@ -13,8 +17,6 @@ def main():
     parser.add_argument("--output_file", metavar="filename",
                         type=str, nargs=1,
                         default=None, help="output filename")
-    parser.add_argument("--scale", metavar="factor", type=str, nargs="?",
-                        help="remanence scaling factor")
     parser.add_argument("input_file", metavar="filename",
                         type=str, nargs=1,
                         help="input filename")
@@ -23,9 +25,9 @@ def main():
     
     infile = args.input_file[0]
     outfile = args.output_file[0]
-    header = "     (T)          (Am"
     pairs = []
     maxmag = 0
+
     with open(infile, "rt", encoding="iso-8859-1") as fh:
         reading = False
         for line in fh.readlines():
@@ -36,6 +38,9 @@ def main():
                 else: maxmag = mag
                 pairs.append((field, mag))
             if "(T)" in line and "(Am" in line:
+                # This will only match the data header of a
+                # hybrid file, which contains (T) and (Am²).
+                # Currently, cgs and SI files are not handled.
                 reading = True
     
     with open(outfile, "w") as fh:
