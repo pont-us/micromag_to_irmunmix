@@ -7,13 +7,16 @@ magnetization values and extracting them from the file; ensuring that
 the magnetization is monotonically increasing; and scaling the field and
 magnetization values to units compatible with irmunmix. Currently
 assumes modified SI unit system in the file.
+
+By Pontus Lurcock, 2018. Released into the public domain.
 """
 
 import sys
 import argparse
 
 def main():
-    parser = argparse.ArgumentParser(description="Preprocess micromag files.")
+    parser = argparse.ArgumentParser(
+        description="Convert micromag data to irmunmix format")
     parser.add_argument("--output_file", metavar="filename",
                         type=str, nargs=1,
                         default=None, help="output filename")
